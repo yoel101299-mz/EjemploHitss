@@ -1,69 +1,34 @@
-# ejemplo-hitss
+# Ejemplo Hitss - Backend Base (Arquitectura Hexagonal con Quarkus)
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Este proyecto es una plantilla base (boilerplate) profesional construida sobre **Quarkus** utilizando **Arquitectura Hexagonal (Puertos y Adaptadores)** y un empaquetado desacoplado orientado a **Características (Package by Feature)**. Está diseñado para aislar completamente las reglas del negocio de los componentes tecnológicos y de infraestructura.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+---
 
-## Running the application in dev mode
+## 🚀 Arquitectura del Proyecto
 
-You can run your application in dev mode that enables live coding using:
+El software sigue los principios del Diseño Guiado por el Dominio (DDD) y la Arquitectura Hexagonal. El código se organiza de manera que el núcleo de la aplicación no dependa de frameworks, bases de datos ni herramientas externas:
 
-```shell script
-./mvnw quarkus:dev
-```
+* **`domain/` (El Corazón)**: Contiene el modelo de negocio puro, entidades lógicas y excepciones de negocio. Es Java puro (Cero dependencias de Quarkus, Hibernate o Panache).
+* **`ports/` (Los Límites)**: Define las interfaces y contratos que exponen el comportamiento del hexágono.
+  * `inbound/`: Interfaces para los casos de uso que disparan los actores externos (Drivers, ej: Controladores REST).
+  * `outbound/`: Interfaces SPI que definen lo que el negocio necesita de los sistemas externos (Driven, ej: Repositorios de persistencia).
+* **`application/` (El Orquestador)**: Aloja los servicios que implementan la lógica de los casos de uso, coordinando el flujo de datos a través de los puertos.
+* **`infrastructure/` (El Mundo Exterior)**: Contiene toda la tecnología y dependencias del framework. Aquí vive Quarkus, la serialización JSON, la persistencia real con Panache y las migraciones de **Flyway**.
+* **`shared/` (Transversal)**: Código auxiliar compartido entre múltiples módulos (clases abstractas de dominio, configuraciones globales, etc.).
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+---
 
-## Packaging and running the application
+## 🛠️ Tecnologías Core
 
-The application can be packaged using:
+* **Java 21**
+* **Quarkus 3.x**
+* **PostgreSQL** (Motor de Base de Datos Relacional)
+* **Flyway** (Evolución y control de versiones del esquema de BD)
+* **MapStruct** (Mapeo estricto y desacoplado entre capas)
+* **Lombok** (Optimización de código Boilerplate)
 
-```shell script
-./mvnw package
-```
+---
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory. Be aware that it’s not an _über-jar_ as
-the dependencies are copied into the `target/quarkus-app/lib/` directory.
+## 🐳 Entorno de Base de Datos (Docker)
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/ejemplo-hitss-1.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): Build RESTful web services and APIs using Jakarta REST (formerly
-  JAX-RS)
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus
-  REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-
-## Provided Code
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+El almacenamiento del sistema corre de manera aislada en un contenedor de **PostgreSQL**.
