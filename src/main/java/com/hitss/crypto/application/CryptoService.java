@@ -4,9 +4,7 @@ import com.hitss.crypto.domain.model.CryptoPrice;
 import com.hitss.crypto.ports.inbound.GetCryptoPriceUseCase;
 import com.hitss.crypto.ports.outbound.CryptoSearchPort;
 import io.smallrye.mutiny.Uni;
-import jakarta.enterprise.context.ApplicationScoped;
 
-@ApplicationScoped
 public class CryptoService implements GetCryptoPriceUseCase {
 
     private final CryptoSearchPort cryptoSearchPort;
