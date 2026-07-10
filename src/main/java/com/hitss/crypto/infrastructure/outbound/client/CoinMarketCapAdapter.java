@@ -10,6 +10,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ApplicationScoped
 public class CoinMarketCapAdapter implements CryptoSearchPort {
 
+    private final String USD = "USD";
+
     private final CoinMarketCapClient cmcClient;
     private final String apiKey;
 
@@ -23,13 +25,13 @@ public class CoinMarketCapAdapter implements CryptoSearchPort {
 
     @Override
     public Uni<CryptoPrice> fetchPrice(String symbol) {
-        return cmcClient.getLatestQuotes(symbol, "USD", apiKey)
+        return cmcClient.getLatestQuotes(symbol, USD, apiKey)
                 .onItem().transform(cmcResponse -> {
                     CoinMarketCapClient.CmcData data = cmcResponse.data().get(symbol);
                     if (data == null) {
                         throw new RuntimeException("Symbol not found: " + symbol);
                     }
-                    double priceUsd = data.quote().get("USD").price();
+                    double priceUsd = data.quote().get(USD).price();
                     return new CryptoPrice(data.name(), data.symbol(), priceUsd);
                 });
     }

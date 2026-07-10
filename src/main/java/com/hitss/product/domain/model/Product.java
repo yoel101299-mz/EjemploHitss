@@ -2,12 +2,15 @@ package com.hitss.product.domain.model;
 
 import com.hitss.shared.domain.exception.DomainException;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+
 import java.math.BigDecimal;
 
+@Setter
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Product {
     private Long id;
     private String sku;

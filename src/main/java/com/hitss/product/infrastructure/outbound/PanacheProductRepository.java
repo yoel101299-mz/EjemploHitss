@@ -14,6 +14,12 @@ import java.util.Optional;
 @ApplicationScoped
 public class PanacheProductRepository implements ProductRepositoryPort {
 
+    private static final String FIND_BY_SKU_QUERY = "sku = ?1 and active = true";
+    private static final String FIND_BY_NAME_QUERY = "lower(name) like lower(?1) and active = true";
+    private static final String FIND_ALL_ACTIVE_QUERY = "active = true";
+    private static final String COUNT_BY_SKU_QUERY = "sku = ?1";
+    private static final int ZERO = 0;
+
     @ApplicationScoped
     public static class InternalPanacheRepository implements PanacheRepository<ProductEntity> { }
 
@@ -44,27 +50,22 @@ public class PanacheProductRepository implements ProductRepositoryPort {
 
     @Override
     public Optional<Product> findBySku(String sku) {
-        return internalRepository.find("sku = ?1 and active = true", sku).firstResultOptional().map(mapper::toDomain);
+        return internalRepository.find(FIND_BY_SKU_QUERY, sku).firstResultOptional().map(mapper::toDomain);
     }
 
     @Override
     public List<Product> findByName(String name) {
-        List<ProductEntity> entities = internalRepository.list("lower(name) like lower(?1) and active = true", "%" + name + "%");
+        List<ProductEntity> entities = internalRepository.list(FIND_BY_NAME_QUERY, "%" + name + "%");
         return mapper.toDomainList(entities);
     }
 
     @Override
     public List<Product> findAll() {
-        return mapper.toDomainList(internalRepository.list("active = true"));
+        return mapper.toDomainList(internalRepository.list(FIND_ALL_ACTIVE_QUERY));
     }
 
     @Override
     public boolean existsBySku(String sku) {
-        return internalRepository.count("sku = ?1", sku) > 0;
-    }
-
-    @Override
-    public void deleteById(Long id) {
-
+        return internalRepository.count(COUNT_BY_SKU_QUERY, sku) > ZERO;
     }
 }

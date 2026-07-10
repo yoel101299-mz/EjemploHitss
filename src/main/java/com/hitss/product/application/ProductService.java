@@ -2,13 +2,25 @@ package com.hitss.product.application;
 
 import com.hitss.product.domain.exception.ProductNotFoundException;
 import com.hitss.product.domain.model.Product;
-import com.hitss.product.ports.inbound.ProductUseCase;
+import com.hitss.product.ports.inbound.CreateProductUseCase;
+import com.hitss.product.ports.inbound.DeleteProductUseCase;
+import com.hitss.product.ports.inbound.FindAllProductsUseCase;
+import com.hitss.product.ports.inbound.FindProductByIdUseCase;
+import com.hitss.product.ports.inbound.FindProductBySkuUseCase;
+import com.hitss.product.ports.inbound.FindProductsByNameUseCase;
+import com.hitss.product.ports.inbound.UpdateProductUseCase;
 import com.hitss.product.ports.outbound.ProductRepositoryPort;
 import com.hitss.shared.domain.exception.DomainException;
 
 import java.util.List;
 
-public class ProductService implements ProductUseCase {
+public class ProductService implements CreateProductUseCase,
+        UpdateProductUseCase,
+        FindProductByIdUseCase,
+        FindProductBySkuUseCase,
+        FindProductsByNameUseCase,
+        FindAllProductsUseCase,
+        DeleteProductUseCase {
 
     private final ProductRepositoryPort repositoryPort;
 
@@ -17,7 +29,7 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public Product createProduct(Product product) {
+    public Product create(Product product) {
         product.initializeNewProduct();
 
         if (repositoryPort.existsBySku(product.getSku())) {
@@ -28,7 +40,7 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public Product updateProduct(Long id, Product updateData) {
+    public Product update(Long id, Product updateData) {
         Product existingProduct = repositoryPort.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No se puede actualizar. Producto no encontrado con ID: " + id));
 
@@ -61,7 +73,7 @@ public class ProductService implements ProductUseCase {
     }
 
     @Override
-    public void deleteProduct(Long id) {
+    public void delete(Long id) {
         Product product = repositoryPort.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("No se puede eliminar. Producto no encontrado con ID: " + id));
         product.deactivate();

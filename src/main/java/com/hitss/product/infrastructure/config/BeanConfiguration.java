@@ -2,7 +2,6 @@ package com.hitss.product.infrastructure.config;
 
 import com.hitss.product.application.ProductService;
 import com.hitss.product.domain.exception.ProductNotFoundException;
-import com.hitss.product.ports.inbound.ProductUseCase;
 import com.hitss.product.ports.outbound.ProductRepositoryPort;
 import com.hitss.shared.domain.exception.DomainException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,7 +18,7 @@ public class BeanConfiguration {
 
     @Produces
     @ApplicationScoped
-    public ProductUseCase productUseCase(ProductRepositoryPort repositoryPort) {
+    public ProductService productUseCase(ProductRepositoryPort repositoryPort) {
         return new ProductService(repositoryPort);
     }
 

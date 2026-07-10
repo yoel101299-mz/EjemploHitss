@@ -12,5 +12,4 @@ public interface ProductRepositoryPort {
     List<Product> findByName(String name);
     List<Product> findAll();
     boolean existsBySku(String sku);
-    void deleteById(Long id);
 }

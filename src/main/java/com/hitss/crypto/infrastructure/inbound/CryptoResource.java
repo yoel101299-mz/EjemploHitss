@@ -9,25 +9,21 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.AllArgsConstructor;
 
 @Path("/crypto")
 @Produces(MediaType.APPLICATION_JSON)
+@AllArgsConstructor
 public class CryptoResource {
 
     private final GetCryptoPriceUseCase getCryptoPriceUseCase;
     private final CryptoDTOMapper dtoMapper;
 
-    public CryptoResource(GetCryptoPriceUseCase getCryptoPriceUseCase, CryptoDTOMapper dtoMapper) {
-        this.getCryptoPriceUseCase = getCryptoPriceUseCase;
-        this.dtoMapper = dtoMapper;
-    }
-
     @GET
     @Path("/price")
     public Uni<Response> getPrice(@QueryParam("symbol") String symbol) {
         return getCryptoPriceUseCase.execute(symbol)
-                .onItem().transform(dtoMapper::toResponse)
-                .onItem().transform(dto -> Response.ok(dto).build())
+                .map(dto -> Response.ok(dtoMapper.toResponse(dto)).build())
                 .onFailure().recoverWithItem(err -> Response.status(Response.Status.NOT_FOUND)
                         .entity(java.util.Map.of("message", err.getMessage())).build());
     }
