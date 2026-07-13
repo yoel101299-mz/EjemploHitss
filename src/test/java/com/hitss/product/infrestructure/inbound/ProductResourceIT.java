@@ -1,16 +1,9 @@
 package com.hitss.product.infrestructure.inbound;
 
-/*import com.hitss.product.domain.model.Product;
-import com.hitss.product.ports.inbound.*;
-import com.hitss.product.ports.outbound.ProductRepositoryPort;
-import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import jakarta.inject.Inject;
-
-import java.math.BigDecimal;
 import java.util.Random;
 import org.hamcrest.Matchers;
 
@@ -19,10 +12,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 
 @QuarkusIntegrationTest
-public class ProductResourceTest {
-
-    @Inject
-    ProductRepositoryPort productRepository;
+public class ProductResourceIT {
 
     private String uniqueSku;
     private Long existingProductId;
@@ -31,19 +21,26 @@ public class ProductResourceTest {
 
     @BeforeEach
     void setUp() {
-        QuarkusTransaction.requiringNew().run(() -> {
-            this.uniqueSku = getSKU();
+        this.uniqueSku = getSKU();
 
-            Product setupProduct = new Product();
-            setupProduct.setSku(uniqueSku);
-            setupProduct.setName("Teclado Mecánico");
-            setupProduct.setPrice(BigDecimal.valueOf(150.56));
-            setupProduct.setStock(3);
-            setupProduct.setActive(true);
+        String setupBody = """
+            {
+                "sku": "%s",
+                "name": "Teclado Mecánico",
+                "price": 150.56,
+                "stock": 3
+            }
+            """.formatted(uniqueSku);
 
-            Product saved = productRepository.save(setupProduct);
-            this.existingProductId = saved.getId();
-        });
+        this.existingProductId = given()
+                .contentType(ContentType.JSON)
+                .body(setupBody)
+                .when()
+                .post("/api/products")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
     }
 
     @Test
@@ -165,4 +162,4 @@ public class ProductResourceTest {
     private String getSKU(){
         return "PRD-" + (1000 + random.nextInt(9000));
     }
-}*/
+}

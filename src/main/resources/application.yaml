@@ -34,9 +34,7 @@ quarkus:
 "%test":
   quarkus:
     datasource:
-      db-kind: h2
-      jdbc:
-        url: "jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1"
-    hibernate-orm:
-      database:
-        generation: drop-and-create
+      db-kind: postgresql
+      devservices:
+        enabled: true
+        image-name: postgres:15-alpine
