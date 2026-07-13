@@ -1,0 +1,42 @@
+quarkus:
+  http:
+    host: 0.0.0.0
+    port: 8180
+
+  datasource:
+    db-kind: postgresql
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+    reactive:
+      url: "postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+      max-size: 20
+    jdbc:
+      enable: true
+      url: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+
+  flyway:
+    migrate-at-start: true
+    baseline-on-migrate: true
+
+  rest-client:
+    logging:
+      scope: request-response
+      body-limit: 50
+
+  log:
+    category:
+      "io.quarkus.rest.client.reactive.runtime.JacksonResponseMimeTypeSetter":
+        level: TRACE
+      "org.jboss.resteasy.reactive.client":
+        level: DEBUG
+
+
+"%test":
+  quarkus:
+    datasource:
+      db-kind: h2
+      jdbc:
+        url: "jdbc:h2:mem:test_db;DB_CLOSE_DELAY=-1"
+    hibernate-orm:
+      database:
+        generation: drop-and-create

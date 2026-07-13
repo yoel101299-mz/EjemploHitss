@@ -1,15 +1,15 @@
 package com.hitss.product.ports.outbound;
 
 import com.hitss.product.domain.model.Product;
+import io.smallrye.mutiny.Uni;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductRepositoryPort {
-    Product save(Product product);
-    Optional<Product> findById(Long id);
-    Optional<Product> findBySku(String sku);
-    List<Product> findByName(String name);
-    List<Product> findAll();
-    boolean existsBySku(String sku);
+    Uni<Product> findById(Long id);
+    Uni<Product> save(Product product);
+    Uni<Product> findBySku(String sku);
+    Uni<List<Product>> findByName(String name);
+    Uni<List<Product>> findAll();
+    Uni<Boolean> existsBySku(String sku);
 }

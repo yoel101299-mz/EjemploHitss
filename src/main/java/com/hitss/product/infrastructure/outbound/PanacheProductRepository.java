@@ -4,12 +4,12 @@ import com.hitss.product.domain.model.Product;
 import com.hitss.product.infrastructure.outbound.entity.ProductEntity;
 import com.hitss.product.infrastructure.outbound.mapper.ProductEntityMapper;
 import com.hitss.product.ports.outbound.ProductRepositoryPort;
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import io.quarkus.hibernate.reactive.panache.PanacheRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @ApplicationScoped
 public class PanacheProductRepository implements ProductRepositoryPort {
@@ -18,7 +18,7 @@ public class PanacheProductRepository implements ProductRepositoryPort {
     private static final String FIND_BY_NAME_QUERY = "lower(name) like lower(?1) and active = true";
     private static final String FIND_ALL_ACTIVE_QUERY = "active = true";
     private static final String COUNT_BY_SKU_QUERY = "sku = ?1";
-    private static final int ZERO = 0;
+    private static final long ZERO = 0L;
 
     @ApplicationScoped
     public static class InternalPanacheRepository implements PanacheRepository<ProductEntity> { }
@@ -32,40 +32,56 @@ public class PanacheProductRepository implements ProductRepositoryPort {
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
-        // Al no heredar directamente en la clase principal, ya no hay choque de métodos
-        return internalRepository.findByIdOptional(id).map(mapper::toDomain);
+    public Uni<Product> findById(Long id) {
+        return Panache.withSession(() ->
+            internalRepository.findById(id).map(mapper::toDomain)
+        );
     }
 
     @Override
-    public Product save(Product product) {
+    public Uni<Product> save(Product product) {
         ProductEntity entity = mapper.toEntity(product);
+
         if (entity.getId() == null) {
-            internalRepository.persist(entity);
+            return internalRepository.persist(entity)
+                .map(v -> mapper.toDomain(entity));
         } else {
-            internalRepository.getEntityManager().merge(entity);
+            return internalRepository.getSession()
+                .flatMap(session -> session.merge(entity))
+                .map(mapper::toDomain);
         }
-        return mapper.toDomain(entity);
     }
 
     @Override
-    public Optional<Product> findBySku(String sku) {
-        return internalRepository.find(FIND_BY_SKU_QUERY, sku).firstResultOptional().map(mapper::toDomain);
+    public Uni<Product> findBySku(String sku) {
+        return Panache.withSession(() ->
+            internalRepository.find(FIND_BY_SKU_QUERY, sku)
+                .firstResult()
+                .map(mapper::toDomain)
+        );
     }
 
     @Override
-    public List<Product> findByName(String name) {
-        List<ProductEntity> entities = internalRepository.list(FIND_BY_NAME_QUERY, "%" + name + "%");
-        return mapper.toDomainList(entities);
+    public Uni<List<Product>> findByName(String name) {
+        return Panache.withSession(() ->
+            internalRepository.list(FIND_BY_NAME_QUERY, "%" + name + "%")
+                .map(mapper::toDomainList)
+        );
     }
 
     @Override
-    public List<Product> findAll() {
-        return mapper.toDomainList(internalRepository.list(FIND_ALL_ACTIVE_QUERY));
+    public Uni<List<Product>> findAll() {
+        return Panache.withSession(() ->
+            internalRepository.list(FIND_ALL_ACTIVE_QUERY)
+                .map(mapper::toDomainList)
+        );
     }
 
     @Override
-    public boolean existsBySku(String sku) {
-        return internalRepository.count(COUNT_BY_SKU_QUERY, sku) > ZERO;
+    public Uni<Boolean> existsBySku(String sku) {
+        return Panache.withSession(() ->
+            internalRepository.count(COUNT_BY_SKU_QUERY, sku)
+                .map(count -> count > ZERO)
+        );
     }
 }

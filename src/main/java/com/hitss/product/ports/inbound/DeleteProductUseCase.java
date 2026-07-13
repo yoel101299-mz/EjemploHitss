@@ -1,6 +1,8 @@
 package com.hitss.product.ports.inbound;
 
+import io.smallrye.mutiny.Uni;
+
 @FunctionalInterface
 public interface DeleteProductUseCase {
-    void delete(Long id);
+    Uni<Void> delete(Long id);
 }

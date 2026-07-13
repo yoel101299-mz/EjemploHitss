@@ -11,6 +11,9 @@ import com.hitss.product.ports.inbound.FindProductsByNameUseCase;
 import com.hitss.product.ports.inbound.UpdateProductUseCase;
 import com.hitss.product.ports.outbound.ProductRepositoryPort;
 import com.hitss.shared.domain.exception.DomainException;
+import io.quarkus.hibernate.reactive.panache.Panache;
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
+import io.smallrye.mutiny.Uni;
 
 import java.util.List;
 
@@ -29,54 +32,72 @@ public class ProductService implements CreateProductUseCase,
     }
 
     @Override
-    public Product create(Product product) {
-        product.initializeNewProduct();
+    public Uni<Product> create(Product product) {
+        return Panache.withTransaction(() ->
+            repositoryPort.existsBySku(product.getSku())
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Uni.createFrom().failure(new DomainException(
+                                "No se puede registrar. El SKU '" + product.getSku() + "' ya existe en el sistema."));
+                    }
 
-        if (repositoryPort.existsBySku(product.getSku())) {
-            throw new DomainException("No se puede registrar. El SKU '" + product.getSku() + "' ya existe en el sistema.");
-        }
-
-        return repositoryPort.save(product);
+                    product.initializeNewProduct();
+                    return repositoryPort.save(product);
+                })
+        );
     }
 
     @Override
-    public Product update(Long id, Product updateData) {
-        Product existingProduct = repositoryPort.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("No se puede actualizar. Producto no encontrado con ID: " + id));
-
-        existingProduct.updateDetails(updateData.getName(), updateData.getPrice());
-        existingProduct.updateStock(updateData.getStock());
-
-        return repositoryPort.save(existingProduct);
+    public Uni<Product> update(Long id, Product updateData) {
+        return Panache.withTransaction(() ->
+            repositoryPort.findById(id)
+                .onItem().ifNull().failWith(() ->
+                        new ProductNotFoundException("No se puede actualizar. Producto no encontrado con ID: " + id))
+                .flatMap(existingProduct -> {
+                    existingProduct.updateDetails(updateData.getName(), updateData.getPrice());
+                    existingProduct.updateStock(updateData.getStock());
+                    return repositoryPort.save(existingProduct);
+                })
+        );
     }
 
     @Override
-    public Product findById(Long id) {
+    @WithSession
+    public Uni<Product> findById(Long id) {
         return repositoryPort.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con ID: " + id));
+            .onItem().ifNull().failWith(() -> new ProductNotFoundException("Producto no encontrado con ID: " + id));
     }
 
     @Override
-    public Product findBySku(String sku) {
+    @WithSession
+    public Uni<Product> findBySku(String sku) {
         return repositoryPort.findBySku(sku)
-                .orElseThrow(() -> new ProductNotFoundException("Producto no encontrado con SKU: " + sku));
+            .onItem().ifNull().failWith(() -> new ProductNotFoundException("Producto no encontrado con SKU: " + sku));
     }
 
     @Override
-    public List<Product> findByName(String name) {
+    @WithSession
+    public Uni<List<Product>> findByName(String name) {
         return repositoryPort.findByName(name);
     }
 
     @Override
-    public List<Product> findAll() {
+    @WithSession
+    public Uni<List<Product>> findAll() {
         return repositoryPort.findAll();
     }
 
     @Override
-    public void delete(Long id) {
-        Product product = repositoryPort.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException("No se puede eliminar. Producto no encontrado con ID: " + id));
-        product.deactivate();
-        repositoryPort.save(product);
+    public Uni<Void> delete(Long id) {
+        return Panache.withTransaction(() ->
+            repositoryPort.findById(id)
+                .onItem().ifNull().failWith(() ->
+                        new ProductNotFoundException("No se puede eliminar. Producto no encontrado con ID: " + id))
+                .flatMap(product -> {
+                    product.deactivate();
+                    return repositoryPort.save(product);
+                })
+                .replaceWithVoid()
+        );
     }
 }
