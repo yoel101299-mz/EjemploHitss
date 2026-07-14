@@ -1,0 +1,189 @@
+{
+    "info": {
+        "name": "EjemploHitss",
+        "description": "",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "EjemploHitss",
+            "description": "",
+            "item": [
+                {
+                    "name": "GET /api/products",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "http://0.0.0.0:8180/api/products",
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "host": [
+                                "54",
+                                "39",
+                                "98",
+                                "133"
+                            ],
+                            "protocol": "http",
+                            "port": "8180",
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "DELETE /api/products/{id}",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "DELETE",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "http://0.0.0.0:8180/api/products/1",
+                            "path": [
+                                "api",
+                                "products",
+                                "1"
+                            ],
+                            "host": [
+                                "54",
+                                "39",
+                                "98",
+                                "133"
+                            ],
+                            "protocol": "http",
+                            "port": "8180",
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "POST /api/products",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"sku\": \"PRO-0176\",\r\n    \"name\": \"Mouse Logitech\",\r\n    \"price\": 63.56,\r\n    \"stock\": 5\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "http://0.0.0.0:8180/api/products",
+                            "path": [
+                                "api",
+                                "products"
+                            ],
+                            "host": [
+                                "54",
+                                "39",
+                                "98",
+                                "133"
+                            ],
+                            "protocol": "http",
+                            "port": "8180",
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "GET /crypto/price",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "GET",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "http://0.0.0.0:8180/crypto/price",
+                            "path": [
+                                "crypto",
+                                "price"
+                            ],
+                            "host": [
+                                "54",
+                                "39",
+                                "98",
+                                "133"
+                            ],
+                            "protocol": "http",
+                            "port": "8180",
+                            "query": [
+                                {
+                                    "key": "symbol",
+                                    "value": "BTC",
+                                    "description": "",
+                                    "type": "string"
+                                }
+                            ],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                }
+            ],
+            "event": [
+                {
+                    "listen": "prerequest",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                },
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [],
+                        "type": "text/javascript",
+                        "packages": {}
+                    }
+                }
+            ],
+            "auth": {}
+        }
+    ],
+    "variable": [],
+    "event": [],
+    "auth": {}
+}
