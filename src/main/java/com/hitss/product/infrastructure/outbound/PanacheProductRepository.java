@@ -44,12 +44,12 @@ public class PanacheProductRepository implements ProductRepositoryPort {
 
         if (entity.getId() == null) {
             return internalRepository.persist(entity)
-                .map(v -> mapper.toDomain(entity));
-        } else {
-            return internalRepository.getSession()
+                    .map(v -> mapper.toDomain(entity));
+        }
+
+        return internalRepository.getSession()
                 .flatMap(session -> session.merge(entity))
                 .map(mapper::toDomain);
-        }
     }
 
     @Override

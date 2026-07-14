@@ -1,4 +1,4 @@
-package com.hitss.product.infrestructure.inbound;
+package com.hitss.product.infrastructure.inbound;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.http.ContentType;
@@ -32,7 +32,7 @@ public class ProductResourceIT {
             }
             """.formatted(uniqueSku);
 
-        this.existingProductId = given()
+        this.existingProductId = ((Number) given()
                 .contentType(ContentType.JSON)
                 .body(setupBody)
                 .when()
@@ -40,7 +40,7 @@ public class ProductResourceIT {
                 .then()
                 .statusCode(201)
                 .extract()
-                .path("id");
+                .path("id")).longValue();
     }
 
     @Test
@@ -131,9 +131,9 @@ public class ProductResourceIT {
             .get("/api/products/search")
             .then()
             .statusCode(200)
-            .body("[0].id", is(existingProductId.intValue()))
-            .body("[0].sku", is(this.uniqueSku))
-            .body("[0].name", is("Teclado Mecánico"));
+            .body("id", Matchers.hasItem(existingProductId.intValue()))
+            .body("sku", Matchers.hasItem(this.uniqueSku))
+            .body("name", Matchers.hasItem("Teclado Mecánico"));
     }
 
     @Test

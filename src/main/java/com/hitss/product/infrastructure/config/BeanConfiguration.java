@@ -16,17 +16,15 @@ import java.util.Map;
 @Dependent
 public class BeanConfiguration {
 
-    @Produces
-    @ApplicationScoped
-    public ProductService productUseCase(ProductRepositoryPort repositoryPort) {
-        return new ProductService(repositoryPort);
-    }
-
     @Provider
     public static class DomainExceptionMapper implements ExceptionMapper<DomainException> {
+
         @Override
         public Response toResponse(DomainException exception) {
-            int status = (exception instanceof ProductNotFoundException) ? 404 : 400;
+            int status = (exception instanceof ProductNotFoundException)
+                    ? 404
+                    : 400;
+
             return Response.status(status)
                     .entity(Map.of("error", exception.getMessage()))
                     .build();

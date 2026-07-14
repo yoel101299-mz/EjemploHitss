@@ -5,9 +5,9 @@ import jakarta.ws.rs.*;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+//https://pro-api.coinmarketcap.com
 @Path("/v1")
-@RegisterRestClient(baseUri = "https://pro-api.coinmarketcap.com")
+@RegisterRestClient(configKey = "coinmarketcap")
 public interface CoinMarketCapClient {
 
     @GET

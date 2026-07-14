@@ -14,9 +14,11 @@ import com.hitss.shared.domain.exception.DomainException;
 import io.quarkus.hibernate.reactive.panache.Panache;
 import io.quarkus.hibernate.reactive.panache.common.WithSession;
 import io.smallrye.mutiny.Uni;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 
+@ApplicationScoped
 public class ProductService implements CreateProductUseCase,
         UpdateProductUseCase,
         FindProductByIdUseCase,
