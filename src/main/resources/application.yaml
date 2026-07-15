@@ -18,28 +18,16 @@ quarkus:
     migrate-at-start: true
     baseline-on-migrate: true
 
-  rest-client:
-    logging:
-      scope: request-response
-      body-limit: 50
-    coinmarketcap:
-      url: https://pro-api.coinmarketcap.com
-
-  log:
-    category:
-      "io.quarkus.rest.client.reactive.runtime.JacksonResponseMimeTypeSetter":
-        level: TRACE
-      "org.jboss.resteasy.reactive.client":
-        level: DEBUG
 
 "%test":
   CMC_API_KEY: "test-api-key-dummy-value"
+
   quarkus:
     datasource:
-      db-kind: postgresql
       devservices:
         enabled: true
         image-name: postgres:15-alpine
+
     rest-client:
       coinmarketcap:
         url: http://localhost:8089

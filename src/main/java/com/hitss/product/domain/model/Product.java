@@ -2,7 +2,11 @@ package com.hitss.product.domain.model;
 
 import com.hitss.shared.domain.exception.DomainException;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
