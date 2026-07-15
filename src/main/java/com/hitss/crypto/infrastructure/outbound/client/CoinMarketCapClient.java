@@ -9,7 +9,7 @@ import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
-//https://pro-api.coinmarketcap.com
+
 @Path("/v1")
 @RegisterRestClient(configKey = "coinmarketcap")
 public interface CoinMarketCapClient {
@@ -28,3 +28,5 @@ public interface CoinMarketCapClient {
 
     record CmcQuote(@JsonProperty("price") double price) {}
 }
+
+//https://pro-api.coinmarketcap.com

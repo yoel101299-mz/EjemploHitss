@@ -4,7 +4,7 @@ services:
     container_name: ejemplo-hitss-postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ...
+      POSTGRES_PASSWORD: 4JmPgFwpu8c13
       POSTGRES_DB: ejemplo-hitss
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -28,12 +28,12 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DB_HOST: postgres
+      DB_HOST: ejemplo-hitss-postgres
       DB_PORT: 5432
       DB_NAME: ejemplo-hitss
       DB_USERNAME: postgres
-      DB_PASSWORD: ...
-      CMC_API_KEY: ...
+      DB_PASSWORD: 4JmPgFwpu8c13
+      CMC_API_KEY: 587a0064923b488a90ee01d6f307035e
     ports:
       - "8180:8180"
     networks:

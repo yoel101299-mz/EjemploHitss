@@ -5,23 +5,41 @@ quarkus:
 
   datasource:
     db-kind: postgresql
-    username: "${DB_USERNAME}"
-    password: "${DB_PASSWORD}"
-    reactive:
-      url: "postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
-      max-size: 20
-    jdbc:
-      enable: true
-      url: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
   flyway:
     migrate-at-start: true
     baseline-on-migrate: true
 
+  rest-client:
+    coinmarketcap:
+      url: https://pro-api.coinmarketcap.com
+
+"%dev":
+  quarkus:
+    datasource:
+      username: "${DB_USERNAME}"
+      password: "${DB_PASSWORD}"
+      jdbc:
+        enabled: true
+        url: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+      reactive:
+        url: "postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+        max-size: 20
+
+"%prod":
+  quarkus:
+    datasource:
+      username: "${DB_USERNAME}"
+      password: "${DB_PASSWORD}"
+      jdbc:
+        enabled: true
+        url: "jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+      reactive:
+        url: "postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+        max-size: 20
 
 "%test":
   CMC_API_KEY: "test-api-key-dummy-value"
-
   quarkus:
     datasource:
       devservices:
