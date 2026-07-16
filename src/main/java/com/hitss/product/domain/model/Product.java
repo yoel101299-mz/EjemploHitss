@@ -1,62 +1,81 @@
 package com.hitss.product.domain.model;
 
-import com.hitss.shared.domain.exception.DomainException;
+import com.hitss.product.domain.exception.DomainException;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.math.BigDecimal;
-
-@Setter
-@Getter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Product {
-    private Long id;
+    private ProductId id;
     private String sku;
     private String name;
-    private BigDecimal price;
+    private Money price;
     private Integer stock;
     private boolean active;
 
-    public void initializeNewProduct() {
-        validateBusinessRules(this.sku, this.name, this.price, this.stock);
+    public Product(ProductId id, String sku, String name, Money price, Integer stock) {
+        this.id = id;
+        this.sku = sku;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
         this.active = true;
     }
 
-    public void updateDetails(String name, BigDecimal price) {
-        validateBusinessRules(this.sku, name, price, this.stock);
+    public void updateProduct(
+            String name,
+            Money price,
+            Integer stock
+    ) {
+        if (!active) {
+            throw new DomainException("Cannot update inactive product");
+        }
+
+        updateDetails(name, price);
+        updateStock(stock);
+    }
+
+
+    private void updateDetails(String name, Money price) {
+        if (name == null || name.isBlank()) {
+            throw new DomainException("Product name cannot be empty");
+        }
+
         this.name = name;
         this.price = price;
     }
 
-    public void updateStock(Integer newStock) {
-        if (newStock == null || newStock < 0) {
-            throw new DomainException("El stock no puede ser negativo ni nulo.");
+
+    private void updateStock(Integer stock) {
+        if (stock == null || stock < 0) {
+            throw new DomainException("Stock cannot be negative");
         }
-        this.stock = newStock;
+
+        this.stock = stock;
     }
 
     public void deactivate() {
         this.active = false;
     }
 
-    private void validateBusinessRules(String sku, String name, BigDecimal price, Integer stock) {
-        if (sku == null || !sku.matches("^[A-Z]{3}-\\d{4}$")) {
-            throw new DomainException("El SKU es inválido. Debe cumplir el formato estándar (Ej: PRO-1234).");
-        }
-        if (name == null || name.trim().length() < 3) {
-            throw new DomainException("El nombre del producto debe tener al menos 3 caracteres.");
-        }
-        if (price == null || price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new DomainException("El precio del producto debe ser estrictamente mayor a cero.");
-        }
-        if (stock == null || stock < 0) {
-            throw new DomainException("El stock inicial no puede ser negativo.");
-        }
+    public ProductId getId() {
+        return id;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Money getPrice() {
+        return price;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }
