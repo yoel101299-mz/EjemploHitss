@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 
 @Path("/api/products")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @AllArgsConstructor
 public class ProductResource {
 
@@ -29,6 +28,7 @@ public class ProductResource {
     private final UpdateProductUseCase updateProductUseCase;
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @WithTransaction
     public Uni<Response> create(CreateProductRequest request) {
         var command = new CreateProductCommand(
@@ -45,6 +45,7 @@ public class ProductResource {
 
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @WithTransaction
     public Uni<Response> update(@PathParam("id") String id, UpdateProductRequest request) {
         var command = new UpdateProductCommand(
