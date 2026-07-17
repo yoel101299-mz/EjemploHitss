@@ -4,6 +4,7 @@ import com.hitss.product.aplication.dto.ProductDetailsDTO;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.List;
 
 public record ProductResponse(
         String id,
@@ -22,5 +23,11 @@ public record ProductResponse(
                 productDetailsDTO.stock(),
                 productDetailsDTO.active()
         );
+    }
+
+    public static List<ProductResponse> fromDTOs(List<ProductDetailsDTO> productDetailsDTOS) {
+        return productDetailsDTOS.stream()
+                .map(ProductResponse::fromDTO)
+                .toList();
     }
 }

@@ -160,6 +160,49 @@
                         "strictSSL": false,
                         "followRedirects": true
                     }
+                },
+                {
+                    "name": "/api/products/{id}",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "PUT",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\r\n    \"sku\": \"PRO-0178\",\r\n    \"name\": \"Teclado Logitech\",\r\n    \"price\": 65,\r\n    \"stock\": 5\r\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "header": [],
+                        "url": {
+                            "raw": "http://0.0.0.0:8180/api/products/99671ecd-abf9-419d-9b26-10393e9471ad",
+                            "path": [
+                                "api",
+                                "products",
+                                "99671ecd-abf9-419d-9b26-10393e9471ad"
+                            ],
+                            "host": [
+                                "54",
+                                "39",
+                                "98",
+                                "133"
+                            ],
+                            "protocol": "http",
+                            "port": "8180",
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
                 }
             ],
             "event": [

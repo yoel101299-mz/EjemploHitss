@@ -9,11 +9,15 @@ import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
 @AllArgsConstructor
 public class ProductRepositoryAdapter implements ProductRepository {
+
+    private static final String FIND_ALL_ACTIVE_QUERY = "active = true";
+
     private final ProductEntityMapper mapper;
     private final InternalPanacheRepository internalRepository;
 
@@ -37,5 +41,11 @@ public class ProductRepositoryAdapter implements ProductRepository {
         return internalRepository.getSession()
                 .flatMap(session -> session.merge(entity))
                 .replaceWith(product);
+    }
+
+    @Override
+    public Uni<List<Product>> findAll() {
+        return internalRepository.list(FIND_ALL_ACTIVE_QUERY)
+                .map(mapper::toDomainList);
     }
 }

@@ -1,8 +1,10 @@
 package com.hitss.product.infrastructure.web.resource;
 
 import com.hitss.product.aplication.dto.CreateProductCommand;
+import com.hitss.product.aplication.dto.ProductDetailsDTO;
 import com.hitss.product.aplication.dto.UpdateProductCommand;
 import com.hitss.product.aplication.port.CreateProductUseCase;
+import com.hitss.product.aplication.port.GetProductsUseCase;
 import com.hitss.product.aplication.port.UpdateProductUseCase;
 import com.hitss.product.infrastructure.web.dto.CreateProductRequest;
 import com.hitss.product.infrastructure.web.dto.ProductResponse;
@@ -10,6 +12,7 @@ import com.hitss.product.infrastructure.web.dto.UpdateProductRequest;
 import io.quarkus.hibernate.reactive.panache.common.WithTransaction;
 import io.smallrye.mutiny.Uni;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -19,6 +22,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
+
 @Path("/api/products")
 @Produces(MediaType.APPLICATION_JSON)
 @AllArgsConstructor
@@ -26,6 +31,7 @@ public class ProductResource {
 
     private final CreateProductUseCase createProductUseCase;
     private final UpdateProductUseCase updateProductUseCase;
+    private final GetProductsUseCase getProductsUseCase;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -38,8 +44,7 @@ public class ProductResource {
                 request.stock()
         );
         return createProductUseCase.create(command)
-                .map(created -> Response.status(Response.Status.CREATED)
-                        .entity(ProductResponse.fromDTO(created))
+                .map(created -> Response.ok(ProductResponse.fromDTO(created))
                         .build());
     }
 
@@ -56,8 +61,15 @@ public class ProductResource {
         );
 
         return updateProductUseCase.update(command)
-                .map(created -> Response.status(Response.Status.CREATED)
-                        .entity(ProductResponse.fromDTO(created))
+                .map(created -> Response.ok(ProductResponse.fromDTO(created))
+                        .build());
+    }
+
+    @GET
+    @WithTransaction
+    public Uni<Response> getAll() {
+        return getProductsUseCase.getAll()
+                .map((List<ProductDetailsDTO> productDetailsDTOS) -> Response.ok(productDetailsDTOS)
                         .build());
     }
 }

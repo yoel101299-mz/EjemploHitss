@@ -7,12 +7,15 @@ import com.hitss.product.domain.model.ProductId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "cdi")
 public interface ProductDetailsMapper {
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "price", source = "price")
     ProductDetailsDTO toDto(Product product);
+    List<ProductDetailsDTO> toDtoList(List<Product> products);
 
     default String map(ProductId id) {
         return id.value();
