@@ -1,9 +1,6 @@
 package com.hitss.product.infrastructure.web.dto;
 
 import com.hitss.product.aplication.dto.ProductDetailsDTO;
-import io.quarkus.runtime.annotations.RegisterForReflection;
-import lombok.Data;
-import java.math.BigDecimal;
 import java.util.List;
 
 public record ProductResponse(
