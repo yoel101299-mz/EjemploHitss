@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: ejemplo-hitss-postgres
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ejemplo-hitss
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d ejemplo-hitss" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    image: quarkus/ejemplo-hitss
+    container_name: ejemplo-hitss-app
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile.native
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: ejemplo-hitss-postgres
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME:  ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      CMC_API_KEY: ${CMC_API_KEY}
+    ports:
+      - "8180:8180"
+    networks:
+      - ejemplo-hitss
+
+networks:
+  ejemplo-hitss:
+
+volumes:
+  postgres_data:

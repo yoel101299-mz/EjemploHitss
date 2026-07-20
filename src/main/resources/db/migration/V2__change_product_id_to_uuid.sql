@@ -1,0 +1,10 @@
+DROP TABLE product;
+
+CREATE TABLE product (
+     id UUID PRIMARY KEY,
+     sku VARCHAR(8) NOT NULL UNIQUE,
+     name VARCHAR(100) NOT NULL,
+     price NUMERIC(10,2) NOT NULL,
+     stock INTEGER NOT NULL,
+     active BOOLEAN NOT NULL
+);
